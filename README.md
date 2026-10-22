@@ -1,3 +1,5 @@
+<p align="center"><img src=".claude-plugin/icon.png" alt="Ícone do cs-flashcards" width="160"></p>
+
 # cs-flashcards — Flashcards de Computação
 
 Flashcards Anki bonitos para estudar Computação. Os cards são escritos por agents seguindo as
