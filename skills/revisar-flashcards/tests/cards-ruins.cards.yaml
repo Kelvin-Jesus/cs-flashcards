@@ -1,0 +1,68 @@
+# Cada nota aqui tem UM defeito conhecido. O linter deve pegar todos (ver test_lint.py).
+deck: "Teste"
+namespace: teste
+terms:
+  - prefer: "chave estrangeira"
+    avoid: ["foreign key"]
+sources:
+  - id: s1
+    title: "Fonte"
+notes:
+  - id: lista
+    context: "BD › ACID"
+    source: s1
+    front: "Quais são as propriedades ACID?"
+    back: |
+      - Atomicidade
+      - Consistência
+      - Isolamento
+      - Durabilidade
+  - id: binaria
+    context: "SQL"
+    source: s1
+    front: "É possível usar HAVING sem GROUP BY?"
+    back: "==Sim==, o grupo é a tabela inteira."
+  - id: vazamento
+    context: "SQL"
+    source: s1
+    front: "A cláusula HAVING filtra grupos. Que cláusula filtra grupos?"
+    back: "==HAVING=="
+  - id: sql-sem-esquema
+    context: "SQL"
+    source: s1
+    front: |
+      Qual o resultado?
+
+      ```sql
+      SELECT nome FROM aluno WHERE curso_id = 2;
+      ```
+    back: "==Bia=="
+  - id: provincial
+    context: "SQL"
+    source: s1
+    front: "Segundo o slide 12, qual índice suporta busca por intervalo?"
+    back: "==B-tree=="
+  - id: pronome
+    source: s1
+    front: "Isso roda antes ou depois do GROUP BY?"
+    back: "==Antes=="
+  - id: termo
+    context: "BD"
+    source: s1
+    front: "Qual restrição garante que a foreign key aponte para uma linha existente?"
+    back: "==Integridade referencial=="
+  - id: cloze-grande
+    type: cloze
+    context: "SQL"
+    source: s1
+    text: "O WHERE {{c1::filtra as linhas antes de qualquer agrupamento acontecer}}."
+  - id: resposta-longa
+    context: "Redes"
+    source: s1
+    front: "Por que o TCP usa handshake de três vias?"
+    back: "Porque cada lado precisa anunciar seu número de sequência inicial e confirmar o do outro lado, o que exige pelo menos três segmentos trocados entre cliente e servidor antes dos dados."
+  - id: exemplo-citado
+    context: "BD"
+    source: s1
+    front: "No diagrama, qual entidade é fraca?"
+    back: "==Dependente=="

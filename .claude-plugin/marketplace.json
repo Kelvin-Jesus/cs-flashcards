@@ -1,0 +1,11 @@
+{
+  "name": "cs-flashcards",
+  "owner": { "name": "Kelvin" },
+  "plugins": [
+    {
+      "name": "cs-flashcards",
+      "source": "./",
+      "description": "Flashcards para estudar Computação, prontos para importar no Anki/AnkiDroid."
+    }
+  ]
+}

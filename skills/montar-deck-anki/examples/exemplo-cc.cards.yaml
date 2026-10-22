@@ -1,0 +1,212 @@
+# Deck de exemplo: mostra cada tipo de card e cada recurso visual.
+# Fonte da verdade do deck: edite AQUI e rode build_deck.py de novo.
+# Nunca mude `namespace` nem um `id` já publicado: isso apaga o histórico no Anki.
+deck: "Exemplo CC"
+namespace: exemplo-cc
+context_root: "CC"
+lang: pt-BR
+
+terms:                       # vocabulário travado (revisar-flashcards confere)
+  - prefer: "chave estrangeira"
+    avoid: ["foreign key"]
+  - prefer: "busca binária"
+    avoid: ["pesquisa binária", "binary search"]
+
+sources:
+  - id: aula-sql
+    title: "Aula 07 — SQL: agregação"
+  - id: aula-ed
+    title: "Aula 03 — Árvores de busca"
+  - id: git-docs
+    title: "Pro Git, cap. 7"
+    url: https://git-scm.com/book/pt-br/v2
+
+notes:
+  # ---------- SQL: esquema SEMPRE na pergunta, dados reais, prever resultado ----------
+  - id: sql-having-vs-where
+    context: "SQL › Agregação"
+    archetype: distinguisher
+    pair: [sql-where-antes-group]
+    level: core
+    source: aula-sql
+    at: "slide 14"
+    front: |
+      Nesta consulta, qual cláusula filtra **grupos**, depois do `GROUP BY`?
+
+      ```schema
+      pedido(*id, cliente, valor)
+      ```
+
+      ```sql
+      SELECT cliente, SUM(valor)
+      FROM pedido
+      GROUP BY cliente
+      ______ SUM(valor) > 100;
+      ```
+    back: |
+      ==`HAVING`==
+    extra: |
+      `WHERE` filtra **linhas** antes de agrupar; `HAVING` filtra **grupos** depois.
+      Por isso só `HAVING` pode usar `SUM(valor)`.
+
+  - id: sql-where-antes-group
+    context: "SQL › Agregação"
+    archetype: distinguisher
+    pair: [sql-having-vs-where]
+    level: core
+    source: aula-sql
+    at: "slide 13"
+    front: |
+      Por que esta consulta dá erro?
+
+      ```schema
+      pedido(*id, cliente, valor)
+      ```
+
+      ```sql {err=3}
+      SELECT cliente, SUM(valor)
+      FROM pedido
+      WHERE SUM(valor) > 100
+      GROUP BY cliente;
+      ```
+    back: |
+      ==`WHERE` roda antes do agrupamento==, então ainda não existe `SUM(valor)` para comparar.
+    extra: "Troque por `HAVING SUM(valor) > 100` depois do `GROUP BY`."
+
+  - id: sql-prever-groupby
+    context: "SQL › Agregação"
+    archetype: predict-output
+    level: core
+    prereqs: [sql-having-vs-where]
+    source: aula-sql
+    front: |
+      Qual é o resultado?
+
+      ```schema
+      pedido(*id, cliente, valor)
+      ```
+
+      | id | cliente | valor |
+      |----|---------|------:|
+      | 1  | Ana     | 80    |
+      | 2  | Bia     | 150   |
+      | 3  | Ana     | 40    |
+      | 4  | Caio    | 30    |
+
+      ```sql
+      SELECT cliente, SUM(valor) AS total
+      FROM pedido
+      GROUP BY cliente
+      HAVING SUM(valor) > 100;
+      ```
+    back: |
+      | cliente | total |
+      |---------|------:|
+      | ==Ana== | ==120== |
+      | ==Bia== | ==150== |
+    extra: "Caio (30) é descartado pelo `HAVING`. A ordem das linhas não é garantida sem `ORDER BY`."
+
+  # ---------- cloze dentro de código: só um token, sem atravessar linhas ----------
+  - id: busca-binaria-condicao
+    type: cloze
+    context: "Algoritmos › Busca binária"
+    archetype: complete-code
+    level: core
+    source: aula-ed
+    text: |
+      Busca binária iterativa: condição do laço.
+
+      ```python
+      def busca(xs, alvo):
+          lo, hi = 0, len(xs) - 1
+          while {{c1::lo <= hi}}:
+              meio = (lo + hi) // 2
+              if xs[meio] == alvo:
+                  return meio
+              if xs[meio] < alvo:
+                  lo = {{c2::meio + 1}}
+              else:
+                  hi = meio - 1
+          return -1
+      ```
+    extra: |
+      Com `lo < hi`, o último candidato (quando `lo == hi`) nunca é testado.
+
+  - id: busca-binaria-complexidade
+    context: "Algoritmos › Busca binária"
+    archetype: complexity-why
+    level: core
+    prereqs: [busca-binaria-condicao]
+    front: "Por que a busca binária faz \\(O(\\log n)\\) comparações?"
+    back: |
+      Cada passo ==descarta metade== do intervalo: \(n \to n/2 \to n/4 \dots\), e só dá para dividir \(\log_2 n\) vezes até sobrar 1.
+
+  # ---------- árvore: destaque + oclusão de um nó por card ----------
+  - id: bst-insercao
+    type: occlusion
+    context: "Estruturas de dados › Árvore binária de busca"
+    archetype: diagram-occlusion
+    level: core
+    source: aula-ed
+    front: "Inserimos 8, 3, 10, 1, 6, 14 (nessa ordem) numa BST vazia. Que valor ocupa a posição marcada?"
+    diagram: |
+      ```tree
+      8(3(1,6),10(,14))
+      ```
+    occlude: ["6", "14"]
+    back: "==**{alvo}**==. Menores vão para a esquerda, maiores para a direita, comparando a partir da raiz."
+
+  # ---------- diagrama dot com cores semânticas ----------
+  - id: er-cardinalidade
+    context: "BD › Modelo ER"
+    level: basic
+    front: |
+      Neste modelo, quantos **cursos** um aluno pode ter?
+
+      ```dot {caption="notação do professor: (mín, máx)"}
+      graph ER {
+        rankdir=TB;
+        Aluno [shape=box];
+        Curso [shape=box];
+        mat [label="matricula", shape=diamond, color="@accent", fontcolor="@accent"];
+        Aluno -- mat [label=" (1,n)"];
+        mat -- Curso [label=" (1,1)"];
+      }
+      ```
+    back: "==Exatamente um== (cardinalidade (1,1) do lado de Curso)."
+
+  # ---------- digitar a resposta: comando curto, uma linha ----------
+  - id: git-log-oneline
+    type: type
+    context: "Git › Histórico"
+    level: basic
+    source: git-docs
+    version: "Git 2.x"
+    front: "Comando para ver o histórico com **um commit por linha**:"
+    answer: "git log --oneline"
+    back: "Mostra o hash curto e a mensagem de cada commit."
+
+  # ---------- diff e erro ----------
+  - id: python-default-mutavel
+    context: "Python › Funções"
+    archetype: find-bug
+    level: advanced
+    version: "Python 3"
+    front: |
+      Qual é o bug?
+
+      ```python {err=1}
+      def adiciona(item, lista=[]):
+          lista.append(item)
+          return lista
+      ```
+    back: |
+      O valor padrão `[]` é ==criado uma vez só==, na definição da função, e é compartilhado entre as chamadas.
+    extra: |
+      ```diff
+      -def adiciona(item, lista=[]):
+      +def adiciona(item, lista=None):
+      +    if lista is None:
+      +        lista = []
+      ```
+    hint: "Chame `adiciona(1)` duas vezes."

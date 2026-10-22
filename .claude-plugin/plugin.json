@@ -1,0 +1,9 @@
+{
+  "name": "cs-flashcards",
+  "displayName": "Flashcards de Computação",
+  "version": "0.1.0",
+  "description": "Flashcards para estudar Computação, prontos para importar no Anki/AnkiDroid: agents escrevem (Wozniak + Matuschak), desenham (código, diagramas, tabelas, esquemas, oclusão) e revisam; sai um .apkg com prévia, atualizável sem perder o histórico.",
+  "author": { "name": "Kelvin" },
+  "license": "MIT",
+  "keywords": ["flashcards", "spaced-repetition", "computer-science", "study", "wozniak", "matuschak", "apkg"]
+}

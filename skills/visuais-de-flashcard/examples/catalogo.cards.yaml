@@ -1,0 +1,225 @@
+# Catálogo de visuais: cada nota é um modelo pronto para copiar.
+# Renderizado e conferido em 390/800/1280 px, claro e escuro (preview.py).
+deck: "Catálogo de visuais"
+namespace: catalogo-visuais
+context_root: "Modelos"
+notes:
+  - id: lista-ligada
+    context: "Estruturas › Lista ligada"
+    front: |
+      Depois de `remover(20)`, para onde aponta o ponteiro `prox` do nó 10?
+
+      ```dot
+      digraph L {
+        rankdir=LR; nodesep=0.2; ranksep=0.3;
+        node [shape=record, height=0.42, width=0.9, fontsize=15];
+        edge [arrowsize=0.7];
+        head [shape=plaintext, width=0.3, label="head"];
+        n10 [label="{10|<p>}"]; n20 [label="{20|<p>}", color="@alert", fontcolor="@alert"]; n30 [label="{30|<p>}"];
+        nil [shape=plaintext, width=0.2, label="∅"];
+        head -> n10; n10:p:c -> n20 [tailclip=false]; n20:p:c -> n30 [tailclip=false]; n30:p:c -> nil [tailclip=false];
+      }
+      ```
+    back: "==Para o nó 30==: o anterior passa a pular o removido."
+
+  - id: pilha-chamadas
+    context: "Programação › Pilha de chamadas"
+    front: |
+      `fat(3)` chamou `fat(2)`, que chamou `fat(1)`. Qual quadro está no **topo** da pilha?
+
+      ```dot
+      digraph P {
+        node [shape=box, width=1.6, height=0.38];
+        edge [style=invis];
+        t [label="?", style=filled, fillcolor="@mark", color="@accent"];
+        b [label="fat(2)  n=2"]; c [label="fat(3)  n=3"]; d [label="main"];
+        t -> b -> c -> d;
+      }
+      ```
+    back: "==`fat(1)`== — o último chamado é o primeiro a retornar (LIFO)."
+
+  - id: hash-encadeamento
+    context: "Estruturas › Tabela hash"
+    front: |
+      Com `h(k) = k mod 5` e encadeamento, em qual balde entra a chave **17**?
+
+      ```dot
+      digraph H {
+        rankdir=LR; nodesep=0.12; node [shape=record, height=0.32, fontsize=13];
+        T [label="<b0>0|<b1>1|<b2>2|<b3>3|<b4>4", width=0.5];
+        a [label="10"]; b [label="12"]; c [label="7"];
+        T:b0 -> a; T:b2 -> b; b -> c;
+      }
+      ```
+    back: "==Balde 2== (17 mod 5 = 2), no fim da cadeia 12 → 7 → 17."
+
+  - id: grafo-bfs
+    context: "Grafos › BFS"
+    front: |
+      BFS a partir de **A** (vizinhos em ordem alfabética). Qual é o **4º** vértice visitado?
+
+      ```dot
+      graph G {
+        layout=neato; node [shape=circle, width=0.42, fixedsize=true];
+        A [pos="0,1!", style=filled, fillcolor="@accent-soft", color="@accent"]; B [pos="1.2,1.8!"]; C [pos="1.2,0.2!"];
+        D [pos="2.4,1.8!"]; E [pos="2.4,0.2!"];
+        A -- B; A -- C; B -- D; C -- E; D -- E;
+      }
+      ```
+    back: "==D==. Ordem: A, B, C, D, E (fila: primeiro todos os vizinhos de A)."
+
+  - id: automato
+    context: "Teoria da computação › AFD"
+    front: |
+      Em que estado este AFD termina ao ler `abba`?
+
+      ```dot
+      digraph M {
+        rankdir=LR; node [shape=circle, width=0.45, fixedsize=true];
+        i [shape=point, width=0.08]; q2 [shape=doublecircle, width=0.5];
+        i -> q0; q0 -> q1 [label="a"]; q1 -> q1 [label="b"]; q1 -> q2 [label="a"]; q0 -> q0 [label="b"]; q2 -> q2 [label="a,b"];
+      }
+      ```
+    back: "==q2== (final, então aceita): q0 →a q1 →b q1 →b q1 →a q2."
+
+  - id: estados-processo
+    context: "SO › Estados de processo"
+    front: |
+      Que evento leva um processo de **Executando** para **Bloqueado**?
+
+      ```dot
+      digraph S {
+        node [shape=box, style=rounded, height=0.4]; edge [fontsize=12];
+        Novo -> Pronto [label=" admitido"]; Pronto -> Executando [label=" escalonado"];
+        Executando -> Pronto [label=" preempção"];
+        Executando -> Bloqueado [label=" ?", color="@accent", fontcolor="@accent", penwidth=2];
+        Bloqueado -> Pronto [label=" E/S concluída"]; Executando -> Fim [label=" exit"];
+      }
+      ```
+    back: "==Pedido de E/S (ou espera por evento)==."
+
+  - id: tcp-handshake
+    type: occlusion
+    context: "Redes › TCP"
+    front: "Que flags vão no **2º** segmento do handshake?"
+    occlude: ["synack"]
+    diagram: |
+      ```svg
+      <svg viewBox="0 0 320 190" xmlns="http://www.w3.org/2000/svg" font-size="13">
+        <text x="40" y="18" text-anchor="middle" fill="currentColor">cliente</text>
+        <text x="280" y="18" text-anchor="middle" fill="currentColor">servidor</text>
+        <line x1="40" y1="26" x2="40" y2="185" stroke="@muted" stroke-dasharray="4 3"/>
+        <line x1="280" y1="26" x2="280" y2="185" stroke="@muted" stroke-dasharray="4 3"/>
+        <g fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M40 50 L274 80"/><path d="M280 100 L46 130"/><path d="M40 150 L274 180"/>
+        </g>
+        <g fill="currentColor"><path d="M274 80 l-10 -6 l1 9 z"/><path d="M46 130 l10 -6 l-1 9 z"/><path d="M274 180 l-10 -6 l1 9 z"/></g>
+        <text x="150" y="56" text-anchor="middle" fill="currentColor">SYN</text>
+        <g data-occ="synack"><rect x="118" y="98" width="70" height="20" rx="4" fill="@accent-soft" stroke="@accent"/>
+          <text x="153" y="113" text-anchor="middle" fill="currentColor">SYN+ACK</text></g>
+        <text x="150" y="157" text-anchor="middle" fill="currentColor">ACK</text>
+      </svg>
+      ```
+    back: "==SYN e ACK== (o servidor confirma e sincroniza o próprio número)."
+
+  - id: git-grafo
+    context: "Git › Branches"
+    front: |
+      Depois de `git merge feature` em `main`, quantos **pais** tem o commit M?
+
+      ```dot
+      digraph Git {
+        rankdir=LR; node [shape=circle, width=0.4, fixedsize=true, fontsize=12];
+        A -> B -> C -> M; B -> D -> E -> M;
+        M [style=filled, fillcolor="@accent-soft", color="@accent"];
+        main [shape=plaintext, fontcolor="@accent"]; feature [shape=plaintext, fontcolor="@muted"];
+        main -> M [style=dashed, arrowhead=none]; feature -> E [style=dashed, arrowhead=none];
+        {rank=same; C; E}
+      }
+      ```
+    back: "==Dois== (C e E): commit de merge."
+
+  - id: dp-tabela
+    context: "Algoritmos › Programação dinâmica"
+    front: |
+      LCS de `ABC` e `AC`: qual valor vai na célula marcada?
+
+      |   | ε | A | C |
+      |---|---|---|---|
+      | ε | 0 | 0 | 0 |
+      | A | 0 | 1 | 1 |
+      | B | 0 | 1 | 1 |
+      | C | 0 | 1 | ==?== |
+    back: "==2==: `C = C`, então diagonal + 1 (1 + 1)."
+
+  - id: normalizacao-antes-depois
+    context: "BD › Normalização"
+    front: |
+      Qual é a **primeira** forma normal que esta relação viola?
+
+      ```schema
+      pedido(*num, *produto, qtd, cliente, cidade_cliente)
+      ```
+      Dependências: `num → cliente`, `cliente → cidade_cliente`, `num, produto → qtd`
+    back: "==2FN==: `cliente` depende só de `num`, parte da chave composta (dependência parcial)."
+
+  - id: join-resultado
+    context: "SQL › Junções"
+    front: |
+      Quantas linhas retorna o `LEFT JOIN`?
+
+      ```schema
+      aluno(*id, nome)
+      matricula(*aluno_id -> aluno.id, *disciplina)
+      ```
+
+      | id | nome |
+      |---|---|
+      | 1 | Ana |
+      | 2 | Bia |
+      | 3 | Caio |
+
+      | aluno_id | disciplina |
+      |---|---|
+      | 1 | BD |
+      | 1 | SO |
+
+      ```sql
+      SELECT a.nome, m.disciplina
+      FROM aluno a
+      LEFT JOIN matricula m
+        ON m.aluno_id = a.id;
+      ```
+    back: "==4==: Ana×2, Bia (NULL), Caio (NULL)."
+
+  - id: osi-oclusao
+    type: occlusion
+    context: "Redes › Modelo OSI"
+    front: "Que camada do OSI está escondida?"
+    diagram: |
+      ```dot
+      digraph OSI {
+        node [shape=box, width=2.2, height=0.36, fontsize=13]; edge [style=invis]; nodesep=0.05; ranksep=0.08;
+        L7 [label="Aplicação"]; L6 [label="Apresentação"]; L5 [label="Sessão"]; L4 [label="Transporte"];
+        L3 [label="Rede"]; L2 [label="Enlace"]; L1 [label="Física"];
+        L7 -> L6 -> L5 -> L4 -> L3 -> L2 -> L1;
+      }
+      ```
+    occlude: ["Transporte", "Rede"]
+    back: "==**{alvo}**== (contando de baixo: Física é 1)."
+
+  - id: heap-push-rastreio
+    context: "Estruturas › Heap binário"
+    archetype: trace-step
+    front: |
+      Como fica o vetor depois de `heappush(h, 2)`?
+
+      ```heap {show=vk}
+      [1, 3, 5, 7, 9, 6, 8]
+      ```
+    back: |
+      ==`[1, 2, 5, 3, 9, 6, 8, 7]`==: o 2 entra no fim (índice 7) e sobe trocando com 7 e 3.
+
+      ```heap {show=vk hl=1 path=0-1-3-7}
+      [1, 2, 5, 3, 9, 6, 8, 7]
+      ```

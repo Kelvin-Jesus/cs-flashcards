@@ -1,0 +1,373 @@
+/* ==========================================================================
+   cs-flashcards — note type CSS (v1)
+   Conceito: "caderno de bancada". Papel frio, tinta escura, a resposta-chave
+   marcada com marca-texto. Um único elemento ousado (o marca-texto); o resto
+   é quieto e funcional.
+   Regras de compatibilidade (verificadas em Anki 26.x e AnkiDroid 2.2x):
+   - .card e .nightMode ficam no MESMO elemento (body) → use .card.nightMode
+   - nada de prefers-color-scheme; nada de JS obrigatório
+   - unidades em em/%: o AnkiDroid aplica zoom no body
+   - .mobile fica no <html> só no AnkiDroid
+   ========================================================================== */
+
+@font-face { font-family: "CC Sans"; src: url("_cc1-atkinson-400.woff2") format("woff2"); font-weight: 400; font-style: normal; }
+@font-face { font-family: "CC Sans"; src: url("_cc1-atkinson-700.woff2") format("woff2"); font-weight: 700; font-style: normal; }
+@font-face { font-family: "CC Sans"; src: url("_cc1-atkinson-400i.woff2") format("woff2"); font-weight: 400; font-style: italic; }
+@font-face { font-family: "CC Mono"; src: url("_cc1-jbmono-400.woff2") format("woff2"); font-weight: 400; }
+@font-face { font-family: "CC Mono"; src: url("_cc1-jbmono-700.woff2") format("woff2"); font-weight: 700; }
+
+/* ---------- tokens ---------- */
+.card {
+  --paper:      #F2F5F4;   /* papel frio */
+  --panel:      #E6ECEA;   /* fundo de código / tabela */
+  --panel-2:    #DCE4E1;
+  --ink:        #16202A;   /* tinta */
+  --muted:      #56636E;
+  --rule:       #C9D3D1;
+  --accent:     #0D6B61;   /* verdete: estrutura, contexto, nós destacados */
+  --accent-ink: #FFFFFF;
+  --accent-soft:#CFE7E2;
+  --mark:       #FFE16B;   /* marca-texto: o que deve ser lembrado */
+  --mark-ink:   #16202A;
+  --alert:      #B3261E;   /* bug, linha errada */
+  --alert-soft: #F7D9D6;
+  --ok:         #1C6B3F;
+  --ok-soft:    #D3EBDC;
+  --dim:        .42;       /* opacidade de linhas fora de foco */
+
+  /* tokens de sintaxe */
+  --sx-kw:   #7A2A8F;  /* palavra-chave */
+  --sx-type: #0D6B61;
+  --sx-fn:   #1F4FA0;
+  --sx-str:  #8A4B00;
+  --sx-num:  #A1301F;
+  --sx-com:  #6B7780;
+  --sx-op:   #3C4852;
+  --sx-bi:   #1F4FA0;
+  --sx-dec:  #7A5A00;
+
+  --font-ui:   "CC Sans", "Atkinson Hyperlegible Next", "Segoe UI", Roboto, sans-serif;
+  --font-code: "CC Mono", "JetBrains Mono", "DejaVu Sans Mono", ui-monospace, monospace;
+}
+.card.nightMode {
+  --paper:      #121518;
+  --panel:      #1B2025;
+  --panel-2:    #232A30;
+  --ink:        #E5E9EC;
+  --muted:      #98A3AC;
+  --rule:       #2E363D;
+  --accent:     #5CC4B4;
+  --accent-ink: #0B1513;
+  --accent-soft:#17332F;
+  --mark:       rgba(255, 210, 63, .32);
+  --mark-ink:   #FFF4C7;
+  --alert:      #FF8C82;
+  --alert-soft: #3A1E1C;
+  --ok:         #7CD69A;
+  --ok-soft:    #18301F;
+  --dim:        .38;
+
+  --sx-kw:   #D9A2EE;
+  --sx-type: #6FD1C2;
+  --sx-fn:   #8DB7FF;
+  --sx-str:  #F2B866;
+  --sx-num:  #FF9E8A;
+  --sx-com:  #7E8A94;
+  --sx-op:   #B8C2CA;
+  --sx-bi:   #8DB7FF;
+  --sx-dec:  #E8C35A;
+}
+
+/* ---------- base ---------- */
+.card {
+  font-family: var(--font-ui);
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--paper);
+  text-align: left;
+  margin: 0;
+  padding: 0;
+  -webkit-text-size-adjust: 100%;
+  overflow-wrap: break-word;
+}
+.cc {
+  max-width: 36em;
+  margin: 0 auto;
+  padding: 1.1em 1em 2em;
+}
+.cc p { margin: .45em 0; }
+.cc strong, .cc b { font-weight: 700; }
+.cc a { color: var(--accent); }
+.cc ul, .cc ol { margin: .4em 0; padding-left: 1.3em; }
+.cc li { margin: .15em 0; }
+.cc img { max-width: 100%; height: auto; }
+.cc img.dg-img { max-height: none !important; }
+.cc kbd {
+  font-family: var(--font-code); font-size: .82em;
+  padding: .05em .4em; border: 1px solid var(--rule); border-bottom-width: 2px;
+  border-radius: 4px; background: var(--panel);
+}
+.cc code {
+  font-family: var(--font-code); font-size: .86em;
+  background: var(--panel); padding: .08em .3em; border-radius: 3px;
+}
+
+/* ---------- contexto (Wozniak 16: dica de contexto) ---------- */
+.ctx {
+  color: var(--accent);
+  font-size: .78em;
+  line-height: 1.3;
+  margin-bottom: .7em;
+  letter-spacing: .01em;
+}
+.ctx .sep { color: var(--muted); padding: 0 .3em; }
+
+/* ---------- pergunta ---------- */
+.q {
+  font-size: 1.22em;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.q p { margin: .3em 0; }
+/* só o 1º parágrafo é a pergunta; o resto é apoio (dados, dependências) */
+.q > :not(:first-child) { font-size: .85em; font-weight: 400; }
+.q > p:not(:first-child) { line-height: 1.5; }
+.q figure, .q .schema, .q table, .q .dg { font-size: .82em; font-weight: 400; }
+
+/* ---------- divisor de resposta ---------- */
+#answer {
+  border: none;
+  border-top: 2px dashed var(--rule);
+  margin: 1.1em 0 1em;
+  height: 0;
+}
+
+/* ---------- resposta ---------- */
+.a { font-size: 1.05em; }
+.a > p:first-child { margin-top: 0; }
+
+/* O elemento ousado: marca-texto. Use ==assim== na resposta-chave. */
+.cc mark, .cloze-reveal .cloze {
+  color: var(--mark-ink);
+  background: linear-gradient(100deg, transparent 0 .12em, var(--mark) .12em calc(100% - .1em), transparent calc(100% - .1em));
+  padding: 0 .18em;
+  margin: 0 -.06em;
+  border-radius: .25em .35em .3em .2em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* código dentro do marca-texto: o marca-texto vence o fundo do código */
+.cc mark code { background: transparent; padding: 0; }
+
+/* extra: por quê, exemplo, mnemônico — secundário */
+.extra {
+  margin-top: 1.1em;
+  padding: .7em .9em;
+  border-left: 3px solid var(--accent);
+  background: var(--panel);
+  border-radius: 0 6px 6px 0;
+  font-size: .9em;
+  color: var(--ink);
+}
+.extra > :first-child { margin-top: 0; }
+.extra > :last-child { margin-bottom: 0; }
+
+/* fonte e versão (Wozniak 18 e 19) */
+.meta {
+  margin-top: 1.2em;
+  font-size: .72em;
+  color: var(--muted);
+  display: flex; flex-wrap: wrap; gap: .2em 1em;
+}
+.meta:empty { display: none; }
+.meta .ver::before { content: "válido para "; }
+.meta .src::before { content: "fonte: "; }
+
+/* dica: toque para abrir (summary é ignorado pelos gestos do AnkiDroid) */
+details.hint { margin-top: 1em; font-size: .9em; }
+details.hint summary {
+  cursor: pointer; color: var(--accent); width: max-content;
+  list-style: none; padding: .2em .6em; border: 1px solid var(--accent);
+  border-radius: 999px; font-size: .9em;
+}
+details.hint summary::-webkit-details-marker { display: none; }
+details.hint[open] summary { background: var(--accent); color: var(--accent-ink); }
+details.hint > div { margin-top: .5em; color: var(--muted); }
+
+/* ---------- cloze ---------- */
+.cloze-ask .cloze {
+  font-family: var(--font-code);
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 4px;
+  padding: 0 .45em;
+  white-space: nowrap;
+}
+.cloze-body { font-size: 1.1em; font-weight: 400; line-height: 1.5; }
+.cloze-body pre .cloze { font-size: 1em; }
+
+/* ---------- digitar a resposta ---------- */
+.typein input#typeans {
+  width: 100%; box-sizing: border-box;
+  font-family: var(--font-code); font-size: .95em;
+  padding: .5em .6em; margin-top: .8em;
+  border: 2px solid var(--rule); border-radius: 6px;
+  background: var(--panel); color: var(--ink);
+}
+.typein input#typeans:focus { outline: none; border-color: var(--accent); }
+.typein code#typeans, .typein #typeans {
+  font-family: var(--font-code); font-size: .9em;
+}
+.typeGood { background: var(--ok-soft); color: var(--ok); }
+.typeBad  { background: var(--alert-soft); color: var(--alert); }
+.typeMissed { background: var(--panel-2); color: var(--muted); }
+
+/* ---------- blocos de código ---------- */
+figure.code {
+  margin: .8em 0;
+  background: var(--panel);
+  border-radius: 8px;
+  overflow: hidden;
+  font-weight: 400;
+}
+figure.code figcaption {
+  font-family: var(--font-code);
+  font-size: .72em;
+  color: var(--muted);
+  padding: .45em .9em 0;
+}
+figure.code pre, .cc code, .schema, .typein input#typeans {
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
+}
+figure.code pre {
+  margin: 0;
+  padding: .7em 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  white-space: pre;
+  font-family: var(--font-code);
+  font-size: .8em;
+  line-height: 1.55;
+  tab-size: 4;
+  text-align: left;
+}
+figure.code.wrap pre { white-space: pre-wrap; }
+figure.code code { background: none; padding: 0; font-size: 1em; border-radius: 0; }
+figure.code .line { display: inline-block; min-width: 100%; box-sizing: border-box; padding: 0 .9em 0 .6em; }
+figure.code .ln {
+  display: inline-block; width: 1.8em; margin-right: .7em; text-align: right;
+  color: var(--muted); opacity: .7;
+  -webkit-user-select: none; user-select: none;
+}
+figure.code .line.hl  { background: var(--mark); box-shadow: inset 3px 0 0 var(--sx-dec); }
+figure.code .line.err { background: var(--alert-soft); box-shadow: inset 3px 0 0 var(--alert); }
+figure.code .line.ok  { background: var(--ok-soft);    box-shadow: inset 3px 0 0 var(--ok); }
+figure.code .line.dim { opacity: var(--dim); }
+figure.code.out pre { color: var(--ink); }
+figure.code.out { background: var(--panel-2); }
+
+/* tokens (classes curtas do Pygments, emitidas pelo cardrender) */
+.code .k, .code .kd, .code .kn, .code .kp, .code .kr, .code .kc { color: var(--sx-kw); font-weight: 700; }
+.code .kt, .code .nc, .code .nn { color: var(--sx-type); }
+.code .nf, .code .fm, .code .nx { color: var(--sx-fn); }
+.code .nb, .code .bp { color: var(--sx-bi); }
+.code .s, .code .s1, .code .s2, .code .sb, .code .sc, .code .sd, .code .se,
+.code .sh, .code .si, .code .sr, .code .ss, .code .sa, .code .dl { color: var(--sx-str); }
+.code .m, .code .mi, .code .mf, .code .mh, .code .mo, .code .mb, .code .il { color: var(--sx-num); }
+.code .c, .code .c1, .code .cm, .code .cs, .code .ch, .code .cp, .code .cpf { color: var(--sx-com); font-style: italic; }
+.code .o, .code .ow, .code .p { color: var(--sx-op); }
+.code .ow { color: var(--sx-kw); font-weight: 700; }
+.code .nd { color: var(--sx-dec); }
+.code .gi { color: var(--ok);    background: var(--ok-soft); }
+.code .gd { color: var(--alert); background: var(--alert-soft); }
+.code .gh, .code .gu { color: var(--accent); font-weight: 700; }
+.code .err { color: inherit; }
+
+/* ---------- tabelas (dados de exemplo) ---------- */
+.tbl { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: .8em 0; }
+.cc table {
+  border-collapse: collapse;
+  font-size: .82em;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  min-width: 50%;
+}
+.cc th, .cc td {
+  border-bottom: 1px solid var(--rule);
+  padding: .32em .7em;
+  text-align: left;
+  vertical-align: top;
+  white-space: nowrap;
+}
+.cc thead th {
+  border-bottom: 2px solid var(--accent);
+  color: var(--accent);
+  font-weight: 700;
+}
+.cc td.hl, .cc tr.hl td { background: var(--mark); color: var(--mark-ink); }
+.cc caption { caption-side: top; text-align: left; font-family: var(--font-code); font-size: .9em; color: var(--muted); padding-bottom: .3em; }
+
+/* ---------- esquema relacional (notação de livro: PK sublinhada) ---------- */
+.schema {
+  margin: .8em 0;
+  padding: .6em .9em;
+  background: var(--panel);
+  border-radius: 8px;
+  font-family: var(--font-code);
+  font-size: .8em;
+  font-weight: 400;
+  line-height: 1.6;
+  overflow-x: auto;
+}
+.schema .rel { padding-left: 1.4em; text-indent: -1.4em; }
+.schema .rn { font-weight: 700; color: var(--accent); }
+.schema .pk { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; font-weight: 700; }
+.schema .fk { font-style: italic; }
+.schema .fkref { color: var(--muted); font-size: .9em; white-space: nowrap; }
+.schema .fkref::before { content: "↳ "; }
+.schema .hl { background: var(--mark); color: var(--mark-ink); border-radius: 3px; padding: 0 .15em; }
+
+/* ---------- diagramas (SVG inline: herdam currentColor e as variáveis) ---------- */
+.dg {
+  margin: .9em 0;
+  text-align: center;
+  color: var(--ink);
+  font-weight: 400;
+}
+.dg svg { max-width: 100%; height: auto; overflow: visible; }
+.dg svg text { font-family: var(--font-ui); }
+.dg figcaption { font-size: .75em; color: var(--muted); margin-top: .3em; }
+.dg .node.hl > polygon, .dg .node.hl > ellipse, .dg .node.hl > path, .dg [data-hl] > :is(rect,circle,ellipse,polygon,path) {
+  fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2px;
+}
+.dg .edge.hl > path { stroke: var(--accent); stroke-width: 2.4px; }
+.dg .edge.hl > polygon { fill: var(--accent); stroke: var(--accent); }
+/* oclusão de diagrama (Wozniak 8): uma região por card */
+.dg .occ-hide > :is(polygon,ellipse,rect,path,circle) { fill: var(--mark) !important; stroke: var(--sx-dec) !important; stroke-width: 2px; stroke-dasharray: 5 3; }
+.dg .occ-hide text { fill: var(--mark-ink) !important; font-weight: 700; }
+.dg .occ-show > :is(polygon,ellipse,rect,path,circle) { fill: var(--mark) !important; stroke: var(--sx-dec) !important; stroke-width: 2.5px; }
+.dg .occ-show text { fill: var(--mark-ink) !important; font-weight: 700; }
+/* no verso de um card de oclusão, esconde o diagrama mascarado da pergunta */
+.cc:has(.occ-back) .q .dg.occ-front { display: none; }
+/* Mermaid: duas renderizações, uma por tema */
+.card.nightMode .dg .mm-light { display: none; }
+.card:not(.nightMode) .dg .mm-dark { display: none; }
+
+/* ---------- matemática (MathJax nativo) ---------- */
+.cc mjx-container { color: var(--ink); }
+
+/* ---------- telas largas ---------- */
+@media (min-width: 900px) {
+  .card { font-size: 20px; }
+  .cc { padding-top: 2em; }
+}
+/* tablet/celular: AnkiDroid já aplica zoom; só aperta margens */
+@media (max-width: 480px) {
+  .card { font-size: 18px; }
+  .cc { padding: .9em .8em 1.6em; }
+  figure.code pre { font-size: .76em; }
+}
